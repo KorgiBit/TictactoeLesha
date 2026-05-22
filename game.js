@@ -2,6 +2,8 @@ function createGame() {
     const board = ['','','','','','','','','']
     let currentPlayer = "X"
     let winner = ''
+    const players = {X: null, O: null}
+
     const LINES = [
         [0,1,2],[3,4,5],[6,7,8], // строки
         [0,3,6],[1,4,7],[2,5,8], // столбцы
@@ -16,9 +18,32 @@ function createGame() {
         return ''
     }
 
-    function makeMove(index) {
+    function addPlayer(socketId) {
+        if (players.X === null) {
+            players.X = socketId
+            return "X"
+        }
+        if (players.O === null) {
+            players.O = socketId
+            return "O"
+        }
+        return 'spectator'
+    }
+
+    function removePlayer(socketId) {
+        if (players.X === socketId || players.O === socketId) {
+            players.X = null
+            players.O = null
+            resetGame()
+            return true
+        }
+        return false
+    }
+
+    function makeMove(index, socketId) {
         if (winner !== '') return false
         if (board[index] !== '') return false
+        if (players[currentPlayer] !== socketId) return false
 
         board[index] = currentPlayer
         winner = checkWinner()
@@ -35,7 +60,7 @@ function createGame() {
         currentPlayer = "X"
         winner = ''
     }
-    return {makeMove, getState, resetGame}
+    return {makeMove, getState, resetGame, addPlayer, removePlayer}
 }
 
 module.exports = {createGame}

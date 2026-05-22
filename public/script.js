@@ -5,6 +5,9 @@ const boardEl  = document.getElementById("board")
 const resetButtonEl = document.getElementById("resetButton")
 const cells = document.querySelectorAll('.cell')
 
+let myRole = null
+let lastState = null
+
 function handleCellClick(event) {
   const cell = event.target
   const index = Number(cell.dataset.index)
@@ -15,27 +18,42 @@ cells.forEach(cell => {
 })
 
 function renderBoard(state) {
+  lastState = state
   const gameOver = state.winner !== ''
+  const isSpectator = myRole === 'spectator'
+  const myTurn = myRole === state.currentPlayer
   cells.forEach(cell => {
     const index = Number(cell.dataset.index)
     const mark = state.board[index]
 
     cell.textContent = mark
-    cell.disabled = mark !== ''
+    cell.disabled = mark !== '' || isSpectator || !myTurn
     cell.classList.remove('x', 'o')
     if (mark !== '') {
       cell.classList.add(mark.toLowerCase())
     }
   })
-  if (gameOver) {
+  if (isSpectator) {
+    statusEl.textContent = `Вы наблюдатель. Игра: ${gameOver ? 'завершена' : 'идет'}`
+  }
+  else if (gameOver) {
     statusEl.textContent = `Победитель: ${state.winner}`
-  } else {
-    statusEl.textContent = `Ход: ${state.currentPlayer}`
+  } 
+  else if (myTurn) {
+    statusEl.textContent = `Ваш ход: ${state.currentPlayer}`
+  }
+  else {
+    statusEl.textContent = `Ожидание хода игрока ${state.currentPlayer}`
   }
 }
 
 resetButtonEl.addEventListener('click', () => {
   socket.emit('resetGame')
+})
+
+socket.on('role', (role) => {
+  myRole = role
+  if (lastState) renderBoard(lastState)
 })
 
 socket.on('getState', (state) => {

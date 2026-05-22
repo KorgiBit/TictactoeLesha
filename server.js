@@ -12,9 +12,11 @@ const game = createGame()
 
 io.on('connection', (socket) => {
   console.log('Клиент подключился: ', socket.id)
+  const role = game.addPlayer(socket.id)
+  socket.emit('role', role)
   socket.emit("getState", game.getState())
   socket.on('makeMove', (index) => {
-    const ok = game.makeMove(index)
+    const ok = game.makeMove(index, socket.id)
     if (ok) {
       io.emit("getState", game.getState())
     }
@@ -27,6 +29,10 @@ io.on('connection', (socket) => {
   
   socket.on('disconnect', () => {
     console.log('Клиент отключился: ', socket.id)
+    const wasPlayer = game.removePlayer(socket.id)
+    if (wasPlayer) {
+      io.emit("getState", game.getState())
+    }
   })
 })
 
