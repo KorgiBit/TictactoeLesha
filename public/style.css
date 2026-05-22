@@ -1,0 +1,93 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #e8ecf1;
+    color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 32px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+.game h1 {
+    font-size: 28px;
+    color: #4a90e2;
+}
+
+.status {
+    font-size: 18px;
+    color: #555;
+    min-height: 24px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 80px);
+    grid-template-rows: repeat(3, 80px);
+    gap: 6px;
+    background: #cfd6dd;
+    padding: 6px;
+    border-radius: 12px;
+}
+
+.cell {
+    border: none;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 40px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.cell:hover:not(:disabled) {
+    background: #f0f4f9;
+}
+
+.cell:disabled {
+    cursor: default;
+}
+
+.cell.x {
+    color: #4a90e2;
+}
+
+.cell.o {
+    color: #2e9e3e;
+}
+
+.reset-button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 12px;
+    background: #4a90e2;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.reset-button:hover {
+    background: #3a7ed0;
+}
+
+.reset-button:active {
+    transform: scale(0.97);
+}
