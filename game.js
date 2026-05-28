@@ -2,6 +2,7 @@ function createGame() {
     const board = ['','','','','','','','','']
     let currentPlayer = "X"
     let winner = ''
+    let winLine = null
     const players = {X: null, O: null}
 
     const LINES = [
@@ -11,11 +12,12 @@ function createGame() {
     ]
     function checkWinner() {
         for (const [a,b,c] of LINES) {
+            const line = [a,b,c]
             if (board[a] !== '' && board[a] === board[b] && board[a] === board[c]) {
-                return board[a]
+                return {mark: board[a], line}
             }
         }
-        return ''
+        return {mark: '', line: null}
     }
 
     function addPlayer(socketId) {
@@ -46,19 +48,27 @@ function createGame() {
         if (players[currentPlayer] !== socketId) return false
 
         board[index] = currentPlayer
-        winner = checkWinner()
+        const result = checkWinner()
+        winner = result.mark
+        winLine = result.line
         if (winner === '') {
-            currentPlayer = currentPlayer === "X" ? 'O' : 'X'
+            if (board.every(cell => cell !== '')) {
+                winner = 'draw'
+            } 
+            else {
+                currentPlayer = currentPlayer === "X" ? 'O' : 'X'
+            }
         }
         return true
     }
     function getState() {
-        return {board, currentPlayer, winner}
+        return {board, currentPlayer, winner, winLine}
     }
     function resetGame() {
         board.fill('')
         currentPlayer = "X"
         winner = ''
+        winLine = null
     }
     return {makeMove, getState, resetGame, addPlayer, removePlayer}
 }

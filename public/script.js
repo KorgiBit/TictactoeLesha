@@ -28,13 +28,23 @@ function renderBoard(state) {
 
     cell.textContent = mark
     cell.disabled = mark !== '' || isSpectator || !myTurn
-    cell.classList.remove('x', 'o')
+    cell.classList.remove('x', 'o', 'win')
     if (mark !== '') {
       cell.classList.add(mark.toLowerCase())
     }
   })
+  
+  if (state.winLine) {
+    state.winLine.forEach(index => {
+      cells[index].classList.add('win')
+    })
+  }
+
   if (isSpectator) {
     statusEl.textContent = `Вы наблюдатель. Игра: ${gameOver ? 'завершена' : 'идет'}`
+  }
+  else if (state.winner === 'draw') {
+    statusEl.textContent = `Ничья!`
   }
   else if (gameOver) {
     statusEl.textContent = `Победитель: ${state.winner}`
