@@ -5,8 +5,21 @@ const boardEl  = document.getElementById("board")
 const resetButtonEl = document.getElementById("resetButton")
 const cells = document.querySelectorAll('.cell')
 
+const lobbyEl = document.getElementById('lobby')
+const gameEl = document.getElementById('game')
+const roomInputEl = document.getElementById('roomInput')
+const joinButtonEl = document.getElementById('joinButton')
+
 let myRole = null
 let lastState = null
+
+joinButtonEl.addEventListener('click', () => {
+  const room = roomInputEl.value.trim()
+  if (room === '') return
+  socket.emit('joinRoom', room)
+  lobbyEl.style.display = 'none'
+  gameEl.style.display = 'block'
+})
 
 function handleCellClick(event) {
   const cell = event.target

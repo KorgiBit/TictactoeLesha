@@ -9,7 +9,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game">
+
+    <div id='lobby' class='lobby'>
+        <h1>Лобби Крестики-нолики</h1>
+        <input type="text" id="roomInput" placeholder="Код комнаты">
+        <button id="joinButton">Войти</button>
+    </div>
+    <div class="game" id="game" style="display: none;">
         <h1>Крестики-нолики</h1>
         <p id="status" class="status">Ход: Х</p>
         <div id="board" class="board">
