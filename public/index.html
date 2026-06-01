@@ -10,14 +10,16 @@
 </head>
 <body>
 
-    <div id='lobby' class='lobby'>
-        <h1>Лобби Крестики-нолики</h1>
+    <div id="lobby" class="lobby">
+        <h1>Крестики-нолики</h1>
         <input type="text" id="roomInput" placeholder="Код комнаты">
         <button id="joinButton">Войти</button>
     </div>
+
     <div class="game" id="game" style="display: none;">
         <h1>Крестики-нолики</h1>
-        <p id="status" class="status">Ход: Х</p>
+        <p id="roomInfo" class="room-info"></p>
+        <p id="status" class="status">Ход: X</p>
         <div id="board" class="board">
             <button class="cell" data-index="0"></button>
             <button class="cell" data-index="1"></button>
@@ -31,6 +33,6 @@
         </div>
         <button id="resetButton" class="reset-button">Новая игра</button>
     </div>
-    
+
 </body>
 </html>
