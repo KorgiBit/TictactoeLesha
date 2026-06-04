@@ -10,6 +10,7 @@ const gameEl = document.getElementById('game')
 const roomInputEl = document.getElementById('roomInput')
 const joinButtonEl = document.getElementById('joinButton')
 const roomInfoEl = document.getElementById('roomInfo')
+const timerEl = document.getElementById('timer')
 
 let myRole = null
 let lastState = null
@@ -75,6 +76,7 @@ function renderBoard(state) {
     else {
         statusEl.textContent = `Ожидание хода игрока ${state.currentPlayer}`
     }
+    timerEl.textContent = `Осталось времени: ${state.timeLeft} сек.`
 }
 
 resetButtonEl.addEventListener('click', () => {

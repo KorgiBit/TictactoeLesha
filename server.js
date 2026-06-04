@@ -10,6 +10,21 @@ const io = new Server(server)
 app.use(express.static('public'))
 
 const games = {}
+const timers = {}
+
+function startTimer(roomId) {
+    clearInterval(timers[roomId])
+    timers[roomId] = setInterval(() => {
+        const game = getGame(roomId)
+        game.tick()
+        io.to(roomId).emit('getState', game.getState())
+    }, 1000)
+}
+
+function stopTimer(roomId) {
+    clearInterval(timers[roomId])
+    delete timers[roomId]
+}
 
 function getGame(roomId) {
     if (!games[roomId]) {
@@ -41,6 +56,10 @@ io.on('connection', (socket) => {
         socket.emit('role', role)
         socket.emit('getState', game.getState())
         sendRoomInfo(roomId)
+        const counts = game.getCounts()
+        if (counts.playersCount === 2 && !timers[roomId]) {
+            startTimer(roomId)
+        }
     })
 
     socket.on('makeMove', (index) => {
@@ -49,6 +68,7 @@ io.on('connection', (socket) => {
         const ok = game.makeMove(index, socket.id)
         if (ok) {
             io.to(roomId).emit('getState', game.getState())
+            startTimer(roomId)
         }
     })
 
@@ -57,6 +77,7 @@ io.on('connection', (socket) => {
         const game = getGame(roomId)
         game.resetGame()
         io.to(roomId).emit('getState', game.getState())
+        startTimer(roomId)
     })
 
     socket.on('disconnect', () => {
@@ -65,6 +86,7 @@ io.on('connection', (socket) => {
         const game = getGame(roomId)
         const wasPlayer = game.removePlayer(socket.id)
         if (wasPlayer) {
+            stopTimer(roomId)
             io.to(roomId).emit('getState', game.getState())
         }
         sendRoomInfo(roomId)

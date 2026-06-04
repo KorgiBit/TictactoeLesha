@@ -6,6 +6,10 @@ function createGame() {
     const players = {X: null, O: null}
     let spectators = []
 
+    let ROUND_TIME = 30
+    let timeLeft = ROUND_TIME
+
+
     const LINES = [
         [0,1,2],[3,4,5],[6,7,8], // строки
         [0,3,6],[1,4,7],[2,5,8], // столбцы
@@ -51,6 +55,7 @@ function createGame() {
         if (board[index] !== '') return false
         if (players[currentPlayer] !== socketId) return false
 
+        timeLeft = ROUND_TIME
         board[index] = currentPlayer
         const result = checkWinner()
         winner = result.mark
@@ -73,15 +78,27 @@ function createGame() {
     }
 
     function getState() {
-        return {board, currentPlayer, winner, winLine}
+        return {board, currentPlayer, winner, winLine, timeLeft}
     }
     function resetGame() {
         board.fill('')
         currentPlayer = "X"
         winner = ''
         winLine = null
+        timeLeft = ROUND_TIME
     }
-    return {makeMove, getState, resetGame, addPlayer, removePlayer, getCounts}
+    function tick() {
+        if (winner !== '') return false
+        timeLeft--
+        if (timeLeft <= 0) {
+            timeLeft = ROUND_TIME
+            currentPlayer = currentPlayer === "X" ? 'O' : 'X'
+            return true
+        }
+        return false
+    }
+
+    return {makeMove, getState, resetGame, addPlayer, removePlayer, getCounts, tick}
 }
 
 module.exports = {createGame}
