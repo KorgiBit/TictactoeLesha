@@ -71,6 +71,15 @@ io.on('connection', (socket) => {
             startTimer(roomId)
         }
     })
+    socket.on('voteRematch', () => {
+        if (!roomId) return
+        const game = getGame(roomId)
+        const started = game.voteRematch(socket.id)
+        if (started) {
+            startTimer(roomId)
+        }
+        io.to(roomId).emit('getState', game.getState())
+    })
 
     socket.on('resetGame', () => {
         if (!roomId) return

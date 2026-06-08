@@ -12,6 +12,8 @@ const joinButtonEl = document.getElementById('joinButton')
 const roomInfoEl = document.getElementById('roomInfo')
 const timerEl = document.getElementById('timer')
 
+const rematchButtonEl = document.getElementById('rematchButton')
+
 let myRole = null
 let lastState = null
 
@@ -77,10 +79,17 @@ function renderBoard(state) {
         statusEl.textContent = `Ожидание хода игрока ${state.currentPlayer}`
     }
     timerEl.textContent = `Осталось времени: ${state.timeLeft} сек.`
+    rematchButtonEl.style.display = gameOver && !isSpectator ? 'block' : 'none'
+    rematchButtonEl.disabled = state.rematchVotes.includes(socket.id)
+    rematchButtonEl.textContent = state.rematchVotes.includes(socket.id) ?
+    'ожидание соперника...' : 'реванш'
 }
 
 resetButtonEl.addEventListener('click', () => {
     socket.emit('resetGame')
+})
+rematchButtonEl.addEventListener('click', () => {
+    socket.emit('voteRematch')
 })
 
 socket.on('role', (role) => {

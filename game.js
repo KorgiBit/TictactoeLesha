@@ -9,12 +9,27 @@ function createGame() {
     let ROUND_TIME = 30
     let timeLeft = ROUND_TIME
 
+    const rematchVotes = new Set()
 
     const LINES = [
         [0,1,2],[3,4,5],[6,7,8], // строки
         [0,3,6],[1,4,7],[2,5,8], // столбцы
         [0,4,8],[2,4,6]          // диагонали
     ]
+    function voteRematch(socketId) {
+        rematchVotes.add(socketId)
+        const bothAgreed = players.X && players.O &&
+         rematchVotes.has(players.X) && 
+         rematchVotes.has(players.O)
+        if (bothAgreed) {
+            rematchVotes.clear()
+            resetGame()
+            return true
+        }
+        return false
+    }
+
+
     function checkWinner() {
         for (const [a,b,c] of LINES) {
             const line = [a,b,c]
@@ -78,7 +93,8 @@ function createGame() {
     }
 
     function getState() {
-        return {board, currentPlayer, winner, winLine, timeLeft}
+        return {board, currentPlayer, winner, winLine, timeLeft, 
+            rematchVotes: [...rematchVotes]}
     }
     function resetGame() {
         board.fill('')
@@ -98,7 +114,9 @@ function createGame() {
         return false
     }
 
-    return {makeMove, getState, resetGame, addPlayer, removePlayer, getCounts, tick}
+    return {makeMove, getState, resetGame, addPlayer, removePlayer, getCounts, tick,
+        voteRematch
+    }
 }
 
 module.exports = {createGame}
