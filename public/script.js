@@ -13,6 +13,7 @@ const roomInfoEl = document.getElementById('roomInfo')
 const timerEl = document.getElementById('timer')
 
 const rematchButtonEl = document.getElementById('rematchButton')
+const scoreEl = document.getElementById('score')
 
 let myRole = null
 let lastState = null
@@ -79,6 +80,7 @@ function renderBoard(state) {
         statusEl.textContent = `Ожидание хода игрока ${state.currentPlayer}`
     }
     timerEl.textContent = `Осталось времени: ${state.timeLeft} сек.`
+    scoreEl.textContent = `Счет - X: ${state.score.X} / O: ${state.score.O} / Ничья: ${state.score.draw}`
     rematchButtonEl.style.display = gameOver && !isSpectator ? 'block' : 'none'
     rematchButtonEl.disabled = state.rematchVotes.includes(socket.id)
     rematchButtonEl.textContent = state.rematchVotes.includes(socket.id) ?

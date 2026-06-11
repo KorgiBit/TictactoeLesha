@@ -8,6 +8,7 @@ function createGame() {
 
     let ROUND_TIME = 30
     let timeLeft = ROUND_TIME
+    const score = {X: 0, O: 0, draw: 0}
 
     const rematchVotes = new Set()
 
@@ -58,6 +59,9 @@ function createGame() {
             players.X = null
             players.O = null
             spectators = []
+            score.X = 0
+            score.O = 0
+            score.draw = 0
             resetGame()
             return true
         }
@@ -83,6 +87,11 @@ function createGame() {
                 currentPlayer = currentPlayer === "X" ? 'O' : 'X'
             }
         }
+        if (winner === 'draw') {
+        score.draw++
+        } else if (winner !== '') {
+            score[winner]++
+        }
         return true
     }
     function getCounts() {
@@ -94,7 +103,7 @@ function createGame() {
 
     function getState() {
         return {board, currentPlayer, winner, winLine, timeLeft, 
-            rematchVotes: [...rematchVotes]}
+            rematchVotes: [...rematchVotes], score}
     }
     function resetGame() {
         board.fill('')
